@@ -16,6 +16,13 @@ export class Product {
 
   @Prop({ default: true })
   available: boolean;
+
+  @Prop({ required: true })
+  @Prop({default: "Other"})
+  category: string;
+
+  @Prop({ default: 10 })
+  rating: number;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
