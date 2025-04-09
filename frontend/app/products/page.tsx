@@ -37,6 +37,9 @@ interface Product {
 export default function ProductsPage() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 6;
   const [newProduct, setNewProduct] = useState<Omit<Product, '_id'>>({
     name: "",
     price: 0,
@@ -60,16 +63,28 @@ export default function ProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`);
-      setProducts(res.data);
-    } catch (error) {
-      console.error("Error fetching products", error);
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`, {
+        params: {
+          ...filters,
+          page,
+          limit: pageSize,
+        },
+      });
+
+      console.log("📦 Full response:", res.data);
+
+      const productList = Array.isArray(res.data?.data) ? res.data.data : [];
+      setProducts(productList);
+      setTotalPages(res.data.totalPages || 1);
+    } catch (err) {
+      console.error("❌ Failed to fetch products:", err);
+      setProducts([]);
     }
   };
 
+
   const handleAddProduct = async () => {
     const token = localStorage.getItem("token");
-    console.log("Submitting product:", newProduct);
     try {
       await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`, newProduct, {
         headers: {
@@ -85,19 +100,6 @@ export default function ProductsPage() {
 
   const handleDeleteProduct = async (id: string) => {
     const token = localStorage.getItem("token");
-console.log("📤 Using token:", token);
-
-if (!token) {
-  console.error("❌ No token found in localStorage");
-  return;
-}
-
-try {
-  const decoded = jwtDecode<JwtPayload>(token);
-  console.log("🪪 Decoded token:", decoded);
-} catch (err) {
-  console.error("❌ Could not decode token:", err);
-}
     try {
       await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`, {
         headers: {
@@ -113,31 +115,10 @@ try {
   const handleEditProduct = (product: Product) => {
     setEditingProduct({ ...product });
   };
-  
+
 
   const handleSaveEdit = async () => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      console.error("❌ No token found in localStorage");
-      return;
-    }
-
-    const decoded = jwtDecode<JwtPayload>(token);
-    console.log("🪪 Decoded token:", decoded);
-    console.log("🕓 Expiry check:", decoded.exp * 1000 < Date.now());
-    console.log("📤 Sending token:", `Bearer ${token}`);
-
-    if (decoded.exp * 1000 < Date.now()) {
-      console.error("❌ Token expired");
-      localStorage.clear();
-      router.push("/login");
-      return;
-    }
-
-    if (decoded.role !== "ADMIN") {
-      console.error("❌ User is not ADMIN", decoded.role);
-      return;
-    }
     if (!editingProduct) return;
     try {
       await axios.put(
@@ -173,6 +154,7 @@ try {
   const applyFilters = async () => {
     try {
       console.log("Applying filter", filters);
+      setPage(1);
       const params = new URLSearchParams(filters as any).toString();
       const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products?${params}`);
       setProducts(res.data);
@@ -199,7 +181,7 @@ try {
       setIsAuthenticated(false);
       router.push("/login");
     }
-  }, []);
+  }, [page,filters]);
 
   return (
     <Box className="min-h-screen p-6 bg-gradient-to-b from-blue-800 via-black to-black text-white relative">
@@ -246,7 +228,7 @@ try {
 
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {products.map((p) => (
+        {(products || []).map((p) => (
           <ProductCard
             key={p._id}
             product={p}
@@ -257,6 +239,25 @@ try {
             handleDeleteProduct={handleDeleteProduct}
           />
         ))}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-6 gap-4">
+        <button
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          disabled={page === 1}
+          className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-white">Page {page} of {totalPages}</span>
+        <button
+          onClick={() => setPage((p) => (p < totalPages ? p + 1 : p))}
+          disabled={page >= totalPages}
+          className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </Box>
   );

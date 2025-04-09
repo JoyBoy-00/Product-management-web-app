@@ -21,15 +21,15 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
 
     useEffect(() => {
         const fetchMaxPrice = async () => {
-          try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/max-price`);
-            setMaxPriceRange(res.data.max || 1000); // default if nothing
-          } catch (err) {
-            console.error("Failed to fetch max price", err);
-          }
+            try {
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/max-price`);
+                setMaxPriceRange(res.data.max || 1000); // default if nothing
+            } catch (err) {
+                console.error("Failed to fetch max price", err);
+            }
         };
         fetchMaxPrice();
-      }, []);
+    }, []);
 
     return (
         <>
@@ -132,21 +132,21 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
 
                             {/* Price Range */}
                             <div>
-                            <div>Price Range</div>
-                            <Slider
-                                value={[filters.minPrice, filters.maxPrice]}
-                                onChange={(_, newValue) => {
-                                    const [min, max] = newValue as number[];
-                                    setFilters((prev: any) => ({
-                                        ...prev,
-                                        minPrice: min,
-                                        maxPrice: max,
-                                    }));
-                                }}
-                                valueLabelDisplay="auto"
-                                min={0}
-                                max={maxPriceRange}
-                            />
+                                <div>Price Range</div>
+                                <Slider
+                                    value={[filters.minPrice, filters.maxPrice]}
+                                    onChange={(_, newValue) => {
+                                        const [min, max] = newValue as number[];
+                                        setFilters((prev: any) => ({
+                                            ...prev,
+                                            minPrice: min,
+                                            maxPrice: max,
+                                        }));
+                                    }}
+                                    valueLabelDisplay="auto"
+                                    min={0}
+                                    max={maxPriceRange}
+                                />
                             </div>
                             <div></div>
                             <div></div>
@@ -159,8 +159,8 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                                     onClick={() => setFilters({
                                         search: "",
                                         category: "",
-                                        minPrice: "",
-                                        maxPrice: "",
+                                        minPrice: 0,
+                                        maxPrice: maxPriceRange,
                                         minRating: "",
                                         sort: ""
                                     })}

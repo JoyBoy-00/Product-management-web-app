@@ -15,8 +15,8 @@ export class ProductController {
 
   // ✅ Public route: no guards
   @Get()
-  findAll(@Query() query: any) {
-    return this.productService.findAll(query);
+  findAll(@Query('page') page = 1, @Query('limit') limit = 10, @Query() query: any) {
+    return this.productService.findAllPaginated(+page, +limit, query);
   }
 
   @Get('max-price')

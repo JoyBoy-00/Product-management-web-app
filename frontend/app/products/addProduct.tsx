@@ -24,7 +24,7 @@ export default function ProductForm({ newProduct, setNewProduct, handleAddProduc
 
     const handleChange = (field: string, value: any) => {
         setNewProduct((prev: any) => ({ ...prev, [field]: value }));
-      };
+    };
 
     return (
         <>
@@ -80,7 +80,7 @@ export default function ProductForm({ newProduct, setNewProduct, handleAddProduc
                                         fullWidth
                                         value={newProduct.category || ""}
                                         onChange={(e) =>
-                                            handleChange("category",e.target.value)
+                                            handleChange("category", e.target.value)
                                         }
                                     >
                                         <MenuItem value="Pen">Pen</MenuItem>
@@ -107,15 +107,28 @@ export default function ProductForm({ newProduct, setNewProduct, handleAddProduc
                                         label="Rating"
                                         type="number"
                                         fullWidth
-                                        value={newProduct.rating || 0}
-                                        onChange={(e) =>
-                                            handleChange("rating", parseFloat(e.target.value))
-                                        }
+                                        inputProps={{ min: 0, max: 10 }}
+                                        value={newProduct.rating}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+
+                                            if (value === "") {
+                                                handleChange("rating", "");
+                                                return;
+                                            }
+
+                                            let parsed = parseFloat(value);
+
+                                            if (parsed > 10) parsed = 10;
+                                            if (parsed < 0) parsed = 0;
+
+                                            handleChange("rating", parsed);
+                                        }}
                                     />
                                 </div>
                             </div>
 
-                            {/* 2nd row: description full width */}
+                            {/*Description*/}
                             <div>
                                 <TextField
                                     label="Description"

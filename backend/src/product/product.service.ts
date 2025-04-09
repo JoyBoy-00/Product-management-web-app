@@ -5,18 +5,63 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class ProductService {
-  constructor(@InjectModel(Product.name) private productModel: Model<ProductDocument>) {}
+  constructor(@InjectModel(Product.name) private productModel: Model<ProductDocument>) { }
 
   async create(data: Partial<Product>) {
     const product = await this.productModel.create(data);
     return product;
   }
 
+  async findAllPaginated(page: number, limit: number, query: any) {
+    const skip = (page - 1) * limit;
+
+    const mongoQuery: any = {};
+
+    // ✅ Safely handle search
+    if (query.search && query.search.trim() !== "") {
+      mongoQuery.name = { $regex: query.search.trim(), $options: "i" };
+    }
+
+    // ✅ Handle category
+    if (query.category && query.category.trim() !== "") {
+      mongoQuery.category = query.category.trim();
+    }
+
+    // ✅ Handle price
+    const minPrice = Number(query.minPrice);
+    const maxPrice = Number(query.maxPrice);
+
+    if (!isNaN(minPrice) || !isNaN(maxPrice)) {
+      mongoQuery.price = {};
+      if (!isNaN(minPrice)) mongoQuery.price.$gte = minPrice;
+      if (!isNaN(maxPrice)) mongoQuery.price.$lte = maxPrice;
+    }
+
+    // ✅ Handle rating
+    const minRating = Number(query.minRating);
+    if (!isNaN(minRating)) {
+      mongoQuery.rating = { $gte: minRating };
+    }
+
+    console.log("📦 Final mongoQuery:", mongoQuery);
+
+    const products = await this.productModel.find(mongoQuery).skip(skip).limit(limit);
+    const total = await this.productModel.countDocuments(mongoQuery);
+
+    return {
+      data: products,
+      total,
+      page,
+      pageSize: limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
   async findAll(query: any) {
-    const { sort, category, minPrice, maxPrice, minRating, search} = query;
-  
+    const { sort, category, minPrice, maxPrice, minRating, search } = query;
+
     const filter: any = {};
-  
+
     if (category) filter.category = category;
     if (minPrice || maxPrice) {
       filter.price = {};
@@ -24,18 +69,18 @@ export class ProductService {
       if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
     }
     if (minRating) filter.rating = { $gte: parseFloat(minRating) };
-  
+
     if (search) {
       filter.$or = [
         { name: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
       ];
     }
-  
+
     const sortOption: any = {};
     if (sort === 'price') sortOption.price = 1;
     else if (sort === 'rating') sortOption.rating = -1;
-  
+
     return this.productModel.find(filter).sort(sortOption);
   }
 
@@ -62,9 +107,9 @@ export class ProductService {
       .findOne()
       .sort({ price: -1 })
       .limit(1);
-  
+
     if (!maxProduct) throw new Error("No products found");
-  
+
     return maxProduct.price;
   }
 }

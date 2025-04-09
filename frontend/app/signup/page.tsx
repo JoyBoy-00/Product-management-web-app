@@ -5,18 +5,12 @@ import { useRouter } from 'next/navigation';
 import { jwtDecode } from "jwt-decode";
 import axios from 'axios';
 import {
-  Card,
   CardContent,
-  Typography,
   TextField,
   Button,
   Box,
   MenuItem,
-  IconButton,
-  Avatar,
-  Menu,
 } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 interface JwtPayload {
   email: string;
@@ -29,8 +23,6 @@ export default function SignupPage() {
   const [form, setForm] = useState({ email: "", password: "", role: "USER" });
   const [error, setError] = useState("");
   const router = useRouter();
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [userInfo, setUserInfo] = useState({ email: "" });
 
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,27 +39,11 @@ export default function SignupPage() {
     }
   };
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove token from local storage
-    localStorage.removeItem("role");  // Remove role from local storage
-    localStorage.removeItem("email"); // Remove email from local storage
-    localStorage.removeItem("userId"); // Remove userId from local storage
-    router.push("/");         // Navigate to login page
-  };
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
         const decoded = jwtDecode<JwtPayload>(token);
-        setUserInfo({ email: decoded.email });
       } catch (err) {
         console.error('Invalid token');
       }
@@ -76,25 +52,7 @@ export default function SignupPage() {
 
   return (
     <Box className="flex justify-center items-center h-screen bg-gradient-to-b from-blue-800 via-black to-black">
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-        <IconButton onClick={handleMenuOpen} className="text-white">
-          <Avatar
-            sx={{
-              width: 48,
-              height: 48,
-              bgcolor: '#B5A8D5', // Tailwind's indigo-600
-              color: 'white',
-              fontSize: 24,
-            }}
-          >
-            <AccountCircleIcon />
-          </Avatar>
-        </IconButton>
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-          <MenuItem disabled>Email: {userInfo.email}</MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
-      </div>
+      
       <div className="w-full max-w-md p-6 backdrop-blur-sm bg-white/90 rounded-xl transition-transform hover:scale-105">
         <CardContent>
           <div className="mb-6 text-3xl font-bold text-center text-black">
