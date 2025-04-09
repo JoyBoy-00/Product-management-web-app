@@ -18,6 +18,8 @@ import {
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { jwtDecode } from "jwt-decode";
+import SearchFilters from "./search";
+import ProductForm from "./addProduct";
 
 interface JwtPayload {
   email: string;
@@ -45,6 +47,14 @@ export default function ProductsPage() {
     description: "",
     category: "",
     rating: 10,
+  });
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "",
+    minPrice: "",
+    maxPrice: "",
+    minRating: "",
+    sort: "",
   });
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -129,8 +139,17 @@ export default function ProductsPage() {
     router.push("/");
   };
 
+  const applyFilters = async () => {
+    try {
+      const params = new URLSearchParams(filters as any).toString();
+      const res = await axios.get(`http://localhost:5000/products?${params}`);
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Failed to apply filters", err);
+    }
+  };
+
   useEffect(() => {
-    fetchProducts();
     const token = localStorage.getItem("token");
     if (!token) {
       setIsAuthenticated(false);
@@ -178,106 +197,21 @@ export default function ProductsPage() {
         </Typography>
       </div>
 
-      {isAdmin && (
-        <Card className="mb-8 p-4">
-          <CardContent>
-            <Typography variant="h6" className="mb-4">
-              Add New Product
-            </Typography>
-            <div className="flex flex-col gap-4">
-              {/* 1st row: name, price, category, rating */}
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-2">
-                  <TextField
-                    label="Name"
-                    fullWidth
-                    value={newProduct.name}
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="flex-1">
-                  <TextField
-                    select
-                    label="Category"
-                    fullWidth
-                    value={newProduct.category || ""}
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...newProduct,
-                        category: e.target.value,
-                      })
-                    }
-                  >
-                    <MenuItem value="Pen">Pen</MenuItem>
-                    <MenuItem value="Pencil">Pencil</MenuItem>
-                    <MenuItem value="Accessories">Accessories</MenuItem>
-                    <MenuItem value="Eraser">Eraser</MenuItem>
-                    <MenuItem value="Notebook">Notebook</MenuItem>
-                    <MenuItem value="Other">Other</MenuItem>
-                  </TextField>
-                </div>
-                <div className="flex-1">
-                  <TextField
-                    label="Price"
-                    type="number"
-                    fullWidth
-                    value={isNaN(newProduct.price) ? "" : newProduct.price}
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...newProduct,
-                        price: e.target.value === "" ? 0 : parseFloat(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-                <div className="flex-1">
-                  <TextField
-                    label="Rating"
-                    type="number"
-                    fullWidth
-                    value={newProduct.rating || 0}
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...newProduct,
-                        rating: parseFloat(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-              </div>
+      {/* Add Product Form */}
+      <ProductForm
+        newProduct={newProduct}
+        setNewProduct={setNewProduct}
+        handleAddProduct={handleAddProduct}
+      />
 
-              {/* 2nd row: description full width */}
-              <div>
-                <TextField
-                  label="Description"
-                  fullWidth
-                  multiline
-                  minRows={2}
-                  value={newProduct.description}
-                  onChange={(e) =>
-                    setNewProduct({
-                      ...newProduct,
-                      description: e.target.value,
-                    })
-                  }
-                />
-              </div>
-            </div>
-            <div className="mt-4">
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddProduct}
-                className="mt-4"
-              >
-                Add Product
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
+      {/* Search Filter */}
+      <SearchFilters
+        filters={filters}
+        setFilters={setFilters}
+        applyFilters={applyFilters}
+      />
+
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((p) => (
@@ -346,12 +280,12 @@ export default function ProductsPage() {
               ) : (
                 <>
                   <div className="flex flex-col">
-                    <Typography variant="h6">{p.name}</Typography>
+                    <Typography variant="h5">{p.name}</Typography>
                     <Typography variant="body2" className="text-gray-600">
                       {p.category}
                     </Typography>
                     <Typography className="font-bold mt-2">
-                      ${p.price}
+                    ₹{p.price}
                     </Typography>
                     <Typography className="font-bold mt-2">
                       {p.rating}⭐

@@ -12,8 +12,31 @@ export class ProductService {
     return product;
   }
 
-  async findAll() {
-    return this.productModel.find().exec();
+  async findAll(query: any) {
+    const { sort, category, minPrice, maxPrice, minRating, search } = query;
+  
+    const filter: any = {};
+  
+    if (category) filter.category = category;
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = parseFloat(minPrice);
+      if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+    }
+    if (minRating) filter.rating = { $gte: parseFloat(minRating) };
+  
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+      ];
+    }
+  
+    const sortOption: any = {};
+    if (sort === 'price') sortOption.price = 1;
+    else if (sort === 'rating') sortOption.rating = -1;
+  
+    return this.productModel.find(filter).sort(sortOption);
   }
 
   async findOne(id: string) {

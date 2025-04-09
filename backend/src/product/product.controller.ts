@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { Query, UseGuards } from '@nestjs/common';
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -10,12 +10,12 @@ import { ProductService } from './product.service';
 // no guard for public routes
 @Controller('products')
 export class ProductController {
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService) { }
 
   // ✅ Public route: no guards
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAll(@Query() query: any) {
+    return this.productService.findAll(query);
   }
 
   // ✅ Public route: no guards
@@ -24,10 +24,9 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
-  // ✅ Protected routes
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // ✅ Public route: no guards
+  @UseGuards(JwtAuthGuard) // Only requires valid login
   @Post()
-  @Roles(Role.ADMIN)
   create(@Body() body: any) {
     return this.productService.create(body);
   }
