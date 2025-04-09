@@ -16,7 +16,7 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
     const handleChange = (field: string, value: any) => {
         setFilters((prev: any) => ({ ...prev, [field]: value }));
     };
-    
+
     return (
         <>
             <div className="mb-8">
@@ -120,56 +120,35 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                             <TextField
                                 label="Description"
                                 className="bg-white rounded-lg"
-                                value={filters.search}
+                                value={filters.description}
                                 onChange={(e) => handleChange("description", e.target.value)}
                                 fullWidth
                                 variant="outlined"
                                 size="small"
                             />
 
-                            {/* Price Range Slider */}
-                    <div className="flex flex-col gap-2">
-                        <label className="text-gray-300 text-sm">Price Range</label>
-                        <Slider
-                            value={[filters.minPrice || 0, filters.maxPrice || 100]}
-                            onChange={(_, newValue) => {
-                                setFilters({
-                                    ...filters,
-                                    minPrice: newValue[0],
-                                    maxPrice: newValue[1],
-                                });
-                            }}
-                            valueLabelDisplay="auto"
-                            min={0}
-                            max={1000}
-                            step={10}
-                            sx={{
-                                color: "#3b82f6",
-                                "& .MuiSlider-valueLabel": {
-                                    backgroundColor: "#1e40af",
-                                    color: "white",
-                                },
-                            }}
-                        />
-                        <div className="flex gap-2">
-                            <TextField
-                                label="Min"
-                                type="number"
-                                value={filters.minPrice || ""}
-                                onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                                size="small"
-                                variant="outlined"
-                            />
-                            <TextField
-                                label="Max"
-                                type="number"
-                                value={filters.maxPrice || ""}
-                                onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                                size="small"
-                                variant="outlined"
-                            />
-                        </div>
-                    </div>
+                            {/* Price Range */}
+                            <div className="flex flex-col gap-2">
+                                
+                                <div className="flex gap-2">
+                                    <TextField
+                                        label="Min"
+                                        type="number"
+                                        value={filters.minPrice || ""}
+                                        onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+                                        size="small"
+                                        variant="outlined"
+                                    />
+                                    <TextField
+                                        label="Max"
+                                        type="number"
+                                        value={filters.maxPrice || ""}
+                                        onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                                        size="small"
+                                        variant="outlined"
+                                    />
+                                </div>
+                            </div>
 
                             {/* Action Buttons */}
                             <div className="flex items-end gap-2">

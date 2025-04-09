@@ -45,7 +45,7 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/auth/login", form);
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`, form);
       const token = res.data.token;
       const decoded = jwtDecode<JwtPayload>(token);
 

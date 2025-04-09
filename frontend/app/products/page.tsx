@@ -54,6 +54,8 @@ export default function ProductsPage() {
     minPrice: "",
     maxPrice: "",
     minRating: "",
+    description: "",
+    rating: "",
     sort: "",
   });
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -64,7 +66,7 @@ export default function ProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/products");
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`);
       setProducts(res.data);
     } catch (error) {
       console.error("Error fetching products", error);
@@ -75,7 +77,7 @@ export default function ProductsPage() {
     const token = localStorage.getItem("token");
     console.log("Submitting product:", newProduct);
     try {
-      await axios.post("http://localhost:5000/products", newProduct, {
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`, newProduct, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,7 +92,7 @@ export default function ProductsPage() {
   const handleDeleteProduct = async (id: string) => {
     const token = localStorage.getItem("token");
     try {
-      await axios.delete(`http://localhost:5000/products/${id}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -110,7 +112,7 @@ export default function ProductsPage() {
     if (!editingProduct) return;
     try {
       await axios.put(
-        `http://localhost:5000/products/${editingProduct._id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${editingProduct._id}`,
         editingProduct,
         {
           headers: {
@@ -142,7 +144,7 @@ export default function ProductsPage() {
   const applyFilters = async () => {
     try {
       const params = new URLSearchParams(filters as any).toString();
-      const res = await axios.get(`http://localhost:5000/products?${params}`);
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products?${params}`);
       setProducts(res.data);
     } catch (err) {
       console.error("Failed to apply filters", err);

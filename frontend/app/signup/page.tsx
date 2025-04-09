@@ -39,7 +39,7 @@ export default function SignupPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/auth/signup', form);
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signup`, form);
       alert('Signup successful!');
       router.push('/login');
     } catch (error: any) {
