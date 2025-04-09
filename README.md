@@ -102,7 +102,7 @@ Admins can add/edit/delete products, regular users can only view
 
 | Admin CRUD | Logout |
 |------|-------|
-|![Home](./screenshot/admin_crud.png)| ![Login](./screenshot/token.png) |
+|![Home](./screenshot/admin_post.png)| ![Login](./screenshot/token.png) |
 
 ---
 ---
