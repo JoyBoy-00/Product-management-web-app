@@ -60,9 +60,32 @@ export default function ProductsPage() {
   const [userInfo, setUserInfo] = useState({ email: "" });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode<JwtPayload>(token);
+      setUserInfo({ email: decoded.email });
+      if (decoded.role === "ADMIN") setIsAdmin(true);
+      setIsAuthenticated(true);
+    } catch (err) {
+      console.error("❌ Invalid token");
+      router.push("/login");
+    } finally {
+      setIsLoading(false); // done loading regardless
+    }
+  }, []);
 
   const fetchProducts = async () => {
     try {
+      console.log("📦 Fetching page:", page, "with filters:", filters);
       const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`, {
         params: {
           ...filters,
@@ -71,13 +94,11 @@ export default function ProductsPage() {
         },
       });
 
-      console.log("📦 Full response:", res.data);
-
       const productList = Array.isArray(res.data?.data) ? res.data.data : [];
       setProducts(productList);
       setTotalPages(res.data.totalPages || 1);
     } catch (err) {
-      console.error("❌ Failed to fetch products:", err);
+      console.error("❌ Error fetching products", err);
       setProducts([]);
     }
   };
@@ -164,24 +185,41 @@ export default function ProductsPage() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setIsAuthenticated(false);
-      router.push("/login");
-      return;
-    }
-    try {
-      const decoded = jwtDecode<JwtPayload>(token);
-      setUserInfo({ email: decoded.email });
-      if (decoded.role === "ADMIN") setIsAdmin(true);
-      setIsAuthenticated(true);
-      fetchProducts();
-    } catch (err) {
-      console.error("Token decode failed", err);
-      setIsAuthenticated(false);
-      router.push("/login");
-    }
-  }, [page,filters]);
+    const fetchProducts = async () => {
+      try {
+        const params = new URLSearchParams(
+          Object.entries({
+            ...filters,
+            page: String(page),
+            limit: String(pageSize),
+          }).reduce((acc, [key, value]) => {
+            acc[key] = String(value);
+            return acc;
+          }, {} as Record<string, string>)
+        ).toString();
+
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products?${params}`);
+
+        // Safely access paginated response
+        const productList = Array.isArray(res.data?.data) ? res.data.data : [];
+        setProducts(productList);
+        setTotalPages(res.data?.totalPages || 1);
+      } catch (err) {
+        console.error("Error fetching products", err);
+        setProducts([]);
+      }
+    };
+
+    fetchProducts();
+  }, [page, filters]);
+
+  if (isLoading) {
+    return <div className="text-white p-6 text-center">🔒 Checking authentication...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return null; // Don't render anything while redirecting
+  }
 
   return (
     <Box className="min-h-screen p-6 bg-gradient-to-b from-blue-800 via-black to-black text-white relative">
@@ -228,7 +266,7 @@ export default function ProductsPage() {
 
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {(products || []).map((p) => (
+        {Array.isArray(products) && products.map((p) => (
           <ProductCard
             key={p._id}
             product={p}
@@ -239,6 +277,11 @@ export default function ProductsPage() {
             handleDeleteProduct={handleDeleteProduct}
           />
         ))}
+
+        {/* Optional: show message if empty */}
+        {Array.isArray(products) && products.length === 0 && (
+          <div className="text-white col-span-full text-center text-lg">No products found.</div>
+        )}
       </div>
 
       {/* Pagination Controls */}

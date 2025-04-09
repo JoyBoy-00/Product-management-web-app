@@ -14,40 +14,54 @@ export class ProductService {
 
   async findAllPaginated(page: number, limit: number, query: any) {
     const skip = (page - 1) * limit;
-
+  
     const mongoQuery: any = {};
-
-    // ✅ Safely handle search
+  
+    // ✅ Search
     if (query.search && query.search.trim() !== "") {
       mongoQuery.name = { $regex: query.search.trim(), $options: "i" };
     }
-
-    // ✅ Handle category
+  
+    // ✅ Category
     if (query.category && query.category.trim() !== "") {
       mongoQuery.category = query.category.trim();
     }
-
-    // ✅ Handle price
-    const minPrice = Number(query.minPrice);
-    const maxPrice = Number(query.maxPrice);
-
+  
+    // ✅ Parse price filters
+    const minPrice = parseFloat(query.minPrice);
+    const maxPrice = parseFloat(query.maxPrice);
+  
     if (!isNaN(minPrice) || !isNaN(maxPrice)) {
       mongoQuery.price = {};
       if (!isNaN(minPrice)) mongoQuery.price.$gte = minPrice;
       if (!isNaN(maxPrice)) mongoQuery.price.$lte = maxPrice;
     }
-
-    // ✅ Handle rating
-    const minRating = Number(query.minRating);
+  
+    // ✅ Rating
+    const minRating = parseFloat(query.minRating);
     if (!isNaN(minRating)) {
       mongoQuery.rating = { $gte: minRating };
     }
-
-    console.log("📦 Final mongoQuery:", mongoQuery);
-
-    const products = await this.productModel.find(mongoQuery).skip(skip).limit(limit);
+  
+    // ✅ Sort
+    let sortOption = {};
+    if (query.sort && typeof query.sort === "string") {
+      const field = query.sort.replace("-", "");
+      const order = query.sort.startsWith("-") ? -1 : 1;
+      sortOption[field] = order;
+    }
+  
+    console.log("📦 MongoQuery:", mongoQuery);
+    console.log("📊 Sort Option:", sortOption);
+  
+    const products = await this.productModel
+      .find(mongoQuery)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
+  
     const total = await this.productModel.countDocuments(mongoQuery);
-
+  
     return {
       data: products,
       total,

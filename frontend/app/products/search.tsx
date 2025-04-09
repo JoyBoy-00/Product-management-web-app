@@ -167,13 +167,13 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                                 >
                                     Reset
                                 </Button>
-                                <Button
+                                {/* <Button
                                     variant="contained"
                                     className="bg-blue-600 hover:bg-blue-700 h-10 w-full"
                                     onClick={applyFilters}
                                 >
                                     Apply
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     </div>
