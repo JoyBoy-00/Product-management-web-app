@@ -62,7 +62,15 @@ export default function HomePage() {
       {userInfo.email && (
         <Box className="absolute top-4 right-4 flex items-center gap-2">
           <IconButton onClick={handleMenuOpen} className="text-white">
-            <Avatar>
+            <Avatar
+              sx={{
+                width: 48,
+                height: 48,
+                bgcolor: '#B5A8D5', // Tailwind's indigo-600
+                color: 'white',
+                fontSize: 24,
+              }}
+            >
               <AccountCircleIcon />
             </Avatar>
           </IconButton>
@@ -72,7 +80,7 @@ export default function HomePage() {
           </Menu>
         </Box>
       )}
-      
+
       <h1 className="text-5xl font-extrabold mb-6 drop-shadow-lg">
         Welcome to Product Manager 🚀
       </h1>

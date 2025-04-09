@@ -155,7 +155,15 @@ export default function ProductsPage() {
       <div className="mb-4">
         <div className="absolute top-4 right-4 flex items-center gap-2">
           <IconButton onClick={handleMenuOpen} className="text-white">
-            <Avatar>
+            <Avatar
+              sx={{
+                width: 48,
+                height: 48,
+                bgcolor: '#B5A8D5', // Tailwind's indigo-600
+                color: 'white',
+                fontSize: 24,
+              }}
+            >
               <AccountCircleIcon />
             </Avatar>
           </IconButton>

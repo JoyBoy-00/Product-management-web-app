@@ -30,7 +30,7 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [userInfo, setUserInfo] = useState({ email: ""});
+  const [userInfo, setUserInfo] = useState({ email: "" });
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
@@ -81,7 +81,15 @@ export default function LoginPage() {
       {userInfo.email && (
         <Box className="absolute top-4 right-4 text-white flex items-center gap-2">
           <IconButton onClick={handleMenuOpen} className="text-white">
-            <Avatar>
+            <Avatar
+              sx={{
+                width: 48,
+                height: 48,
+                bgcolor: '#B5A8D5', // Tailwind's indigo-600
+                color: 'white',
+                fontSize: 24,
+              }}
+            >
               <AccountCircleIcon />
             </Avatar>
           </IconButton>
@@ -92,30 +100,30 @@ export default function LoginPage() {
         </Box>
       )}
       <div className="w-full max-w-md p-6 backdrop-blur-sm bg-white/90 rounded-xl transition-transform hover:scale-105">
-          <div className="mb-6 text-3xl font-bold text-center text-black">
+        <div className="mb-6 text-3xl font-bold text-center text-black">
+          Login
+        </div>
+        <div className="flex flex-col gap-4">
+          <TextField
+            label="Email"
+            name="email"
+            fullWidth
+            value={form.email}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Password"
+            name="password"
+            type="password"
+            fullWidth
+            value={form.password}
+            onChange={handleChange}
+          />
+          {error && <p className="text-red-400 text-sm">{error}</p>}
+          <Button variant="contained" color="primary" onClick={handleLogin}>
             Login
-          </div>
-          <div className="flex flex-col gap-4">
-            <TextField
-              label="Email"
-              name="email"
-              fullWidth
-              value={form.email}
-              onChange={handleChange}
-            />
-            <TextField
-              label="Password"
-              name="password"
-              type="password"
-              fullWidth
-              value={form.password}
-              onChange={handleChange}
-            />
-            {error && <p className="text-red-400 text-sm">{error}</p>}
-            <Button variant="contained" color="primary" onClick={handleLogin}>
-              Login
-            </Button>
-          </div>
+          </Button>
+        </div>
       </div>
     </Box>
   );
