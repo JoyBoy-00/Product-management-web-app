@@ -43,6 +43,13 @@ A full-stack web application by [JoyBoy-00](https://github.com/JoyBoy-00) for ma
 
 ## 📦 Getting Started Locally
 
+## 📥 Clone the Repository
+
+```bash
+git clone https://github.com/JoyBoy-00/Product-Management.git
+cd Product-Management
+```
+
 ### 🔧 Backend Setup
 
 ```bash
