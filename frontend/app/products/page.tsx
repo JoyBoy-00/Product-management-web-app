@@ -50,6 +50,7 @@ export default function ProductsPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [userInfo, setUserInfo] = useState({ email: "" });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const fetchProducts = async () => {
     try {
@@ -125,37 +126,50 @@ export default function ProductsPage() {
   const handleLogout = () => {
     console.log("Logging out...");
     localStorage.clear();
-    router.push("/login");
+    router.push("/");
   };
 
   useEffect(() => {
     fetchProducts();
     const token = localStorage.getItem("token");
-    if (token) {
+    if (!token) {
+      setIsAuthenticated(false);
+      router.push("/login");
+      return;
+    }
+    try {
       const decoded = jwtDecode<JwtPayload>(token);
       setUserInfo({ email: decoded.email });
       if (decoded.role === "ADMIN") setIsAdmin(true);
+      setIsAuthenticated(true);
+      fetchProducts();
+    } catch (err) {
+      console.error("Token decode failed", err);
+      setIsAuthenticated(false);
+      router.push("/login");
     }
   }, []);
 
   return (
-    <Box className="min-h-screen p-6 bg-gradient-to-b from-green-900 via-black to-black text-white relative">
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-        <IconButton onClick={handleMenuOpen} className="text-white">
-          <Avatar>
-            <AccountCircleIcon />
-          </Avatar>
-        </IconButton>
-        <Typography variant="body2">{userInfo.email}</Typography>
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-          <MuiMenuItem disabled>Email: {userInfo.email}</MuiMenuItem>
-          <MuiMenuItem onClick={handleLogout}>Logout</MuiMenuItem>
-        </Menu>
-      </div>
+    <Box className="min-h-screen p-6 bg-gradient-to-b from-blue-800 via-black to-black text-white relative">
+      <div className="mb-4">
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <IconButton onClick={handleMenuOpen} className="text-white">
+            <Avatar>
+              <AccountCircleIcon />
+            </Avatar>
+          </IconButton>
+          <Typography variant="body2">{userInfo.email}</Typography>
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+            <MuiMenuItem disabled>Email: {userInfo.email}</MuiMenuItem>
+            <MuiMenuItem onClick={handleLogout}>Logout</MuiMenuItem>
+          </Menu>
+        </div>
 
-      <Typography variant="h4" className="mb-6 font-bold text-center">
-        Product Management
-      </Typography>
+        <Typography variant="h4" className="mb-6 font-bold text-center">
+          Product Management
+        </Typography>
+      </div>
 
       {isAdmin && (
         <Card className="mb-8 p-4">
