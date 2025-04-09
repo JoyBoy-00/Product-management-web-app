@@ -15,6 +15,7 @@ export default function SignupPage() {
       await axios.post('http://localhost:5000/auth/signup', {
         email,
         password,
+        role: 'ADMIN', // You can set this to 'USER' or 'ADMIN' based on your requirement
       });
       alert('Signup successful!');
       router.push('/login');
