@@ -6,7 +6,10 @@ async function bootstrap() {
 
   // ✅ Enable CORS for frontend (Next.js)
   app.enableCors({
-    origin: 'http://localhost:3000', // frontend origin
+    origin: [
+      'http://localhost:3000', // for local testing
+      process.env.FRONTEND_URL, // ✅ add your Vercel frontend URL
+    ],
     credentials: true,
   });
 
