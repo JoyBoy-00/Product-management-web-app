@@ -103,8 +103,8 @@ export default function ProductsPage() {
   }, []);
 
   return (
-    <Box className="p-6">
-      <div className="mb-6">
+    <Box className="p-6 bg-gray-800">
+      <div className="mb-6 bg-gray-800">
       <Typography variant="h4" className="font-bold text-center">
         Product Management
       </Typography>
