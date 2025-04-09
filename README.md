@@ -64,20 +64,46 @@ cp .env.example .env
 npm run dev
 ```
 
-🔐 Authentication Flow
-JWT is saved to localStorage on login
+## 🔐 Authentication Flow
 
-All authenticated API calls use Authorization: Bearer <token>
-
+JWT is saved to `localStorage` on login  
+All authenticated API calls use `Authorization: Bearer <token>`  
 Admins can add/edit/delete products, regular users can only view
 
-🔎 Product Filters
-✅ Search by name
-✅ Filter by category
-✅ Min/Max price range
-✅ Minimum rating
-✅ Sort by price/rating (asc/desc)
+---
+
+## 🔎 Product Filters
+
+✅ Search by name  
+✅ Filter by category  
+✅ Min/Max price range  
+✅ Minimum rating  
+✅ Sort by price/rating (asc/desc)  
 ✅ Pagination (6 per page)
 
+---
+
+## 🧪 Screenshots (Add yours)
+
+| Login | Products |
+|-------|----------|
+| ![Login](https://placehold.co/300x180?text=Login) | ![Products](https://placehold.co/300x180?text=Products) |
+
+---
+
+## 🙌 Made By
+
+Built with 💙 by [JoyBoy-00](https://github.com/JoyBoy-00)  
+Feel free to fork, contribute, or give a ⭐ on GitHub!
+
+---
+
+## 💡 Future Improvements
+
+- Product images  
+- Registration system  
+- Admin dashboard  
+- Theme toggle (light/dark)  
+- Full test coverage
 
 
