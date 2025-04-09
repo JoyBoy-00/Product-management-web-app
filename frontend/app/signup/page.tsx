@@ -34,7 +34,7 @@ export default function SignupPage() {
   };
 
   return (
-    <Box className="flex justify-center items-center h-screen bg-gray-800">
+    <Box className="flex justify-center items-center h-screen bg-gradient-to-b from-blue-800 via-black to-black">
       <Card className="w-full max-w-md p-6 bg-gray-800">
         <CardContent>
           <div className="mb-6 text-3xl font-bold text-center text-black">
@@ -68,7 +68,7 @@ export default function SignupPage() {
               <MenuItem value="ADMIN">Admin</MenuItem>
             </TextField>
             {error && <p className="text-red-400 text-sm">{error}</p>}
-            <Button variant="contained" color="primary" onClick={handleSignup}>
+            <Button variant="contained" className='bg-green-800' onClick={handleSignup}>
               Signup
             </Button>
           </div>
