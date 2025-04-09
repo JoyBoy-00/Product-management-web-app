@@ -18,7 +18,7 @@ export default function ProductsPage() {
 
     // Login JWT token is present, fetch products
     axios
-      .get('http://localhost:3001/products', {
+      .get('http://localhost:5000/products', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -12,7 +12,7 @@ export default function SignupPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3001/auth/signup', {
+      await axios.post('http://localhost:5000/auth/signup', {
         email,
         password,
       });
