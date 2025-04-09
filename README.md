@@ -92,9 +92,9 @@ Admins can add/edit/delete products, regular users can only view
 
 ## 🧪 Screenshots (Add yours)
 
-| Login | Products |
-|-------|----------|
-| ![Login](https://placehold.co/300x180?text=Login) | ![Products](https://placehold.co/300x180?text=Products) |
+| Home | Login | Products |
+|------|-------|----------|
+|![Home](./screenshot/Home.png)| ![Login](./screenshot/login.png) | ![Products](./screenshot/Signup.png) |
 
 ---
 
