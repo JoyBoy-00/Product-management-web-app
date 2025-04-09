@@ -18,6 +18,7 @@ export default function LoginPage() {
       });
 
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('role', response.data.role); // You need to return role from backend
       router.push('/products');
     } catch (error: any) {
       alert(error?.response?.data?.message || 'Login failed');
