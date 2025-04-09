@@ -13,7 +13,7 @@ export class ProductService {
   }
 
   async findAll(query: any) {
-    const { sort, category, minPrice, maxPrice, minRating, search } = query;
+    const { sort, category, minPrice, maxPrice, minRating, search} = query;
   
     const filter: any = {};
   
@@ -55,5 +55,16 @@ export class ProductService {
     const deleted = await this.productModel.findByIdAndDelete(id).exec();
     if (!deleted) throw new NotFoundException('Product not found');
     return deleted;
+  }
+
+  async getMaxPrice(): Promise<number> {
+    const maxProduct = await this.productModel
+      .findOne()
+      .sort({ price: -1 })
+      .limit(1);
+  
+    if (!maxProduct) throw new Error("No products found");
+  
+    return maxProduct.price;
   }
 }

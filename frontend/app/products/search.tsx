@@ -1,8 +1,9 @@
 "use client";
 
-import { TextField, MenuItem, Button, Card, CardContent, Slider, Collapse } from "@mui/material";
+import { TextField, MenuItem, Button, Card, CardContent, Slider, Collapse, Typography } from "@mui/material";
 import { VisibilityOff as VisibilityOffIcon, AddCircleOutline as AddCircleOutlineIcon } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 interface SearchFiltersProps {
     filters: any;
@@ -12,10 +13,23 @@ interface SearchFiltersProps {
 
 export default function SearchFilters({ filters, setFilters, applyFilters }: SearchFiltersProps) {
     const [showForm, setShowForm] = useState(false);
+    const [maxPriceRange, setMaxPriceRange] = useState(1000); // default fallback
 
     const handleChange = (field: string, value: any) => {
         setFilters((prev: any) => ({ ...prev, [field]: value }));
     };
+
+    useEffect(() => {
+        const fetchMaxPrice = async () => {
+          try {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/max-price`);
+            setMaxPriceRange(res.data.max || 1000); // default if nothing
+          } catch (err) {
+            console.error("Failed to fetch max price", err);
+          }
+        };
+        fetchMaxPrice();
+      }, []);
 
     return (
         <>
@@ -116,39 +130,26 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                                 <MenuItem value="rating">Rating (Low to High)</MenuItem>
                             </TextField>
 
-                            {/* Search */}
-                            <TextField
-                                label="Description"
-                                className="bg-white rounded-lg"
-                                value={filters.description}
-                                onChange={(e) => handleChange("description", e.target.value)}
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                            />
-
                             {/* Price Range */}
-                            <div className="flex flex-col gap-2">
-                                
-                                <div className="flex gap-2">
-                                    <TextField
-                                        label="Min"
-                                        type="number"
-                                        value={filters.minPrice || ""}
-                                        onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                                        size="small"
-                                        variant="outlined"
-                                    />
-                                    <TextField
-                                        label="Max"
-                                        type="number"
-                                        value={filters.maxPrice || ""}
-                                        onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                                        size="small"
-                                        variant="outlined"
-                                    />
-                                </div>
+                            <div>
+                            <div>Price Range</div>
+                            <Slider
+                                value={[filters.minPrice, filters.maxPrice]}
+                                onChange={(_, newValue) => {
+                                    const [min, max] = newValue as number[];
+                                    setFilters((prev: any) => ({
+                                        ...prev,
+                                        minPrice: min,
+                                        maxPrice: max,
+                                    }));
+                                }}
+                                valueLabelDisplay="auto"
+                                min={0}
+                                max={maxPriceRange}
+                            />
                             </div>
+                            <div></div>
+                            <div></div>
 
                             {/* Action Buttons */}
                             <div className="flex items-end gap-2">

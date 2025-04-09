@@ -7,13 +7,17 @@ import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '../common/enums/role.enum';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
-  ) {}
+  private configService: ConfigService,
+  ) {console.log("🚀 JWT Secret in AuthService:", this.configService.get('MY_CUSTOM_JWT_KEY'));
+    
+  }
 
   async signup(dto: SignupDto) {
     const existing = await this.userModel.findOne({ email: dto.email });

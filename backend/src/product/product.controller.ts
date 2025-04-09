@@ -10,6 +10,7 @@ import { ProductService } from './product.service';
 // no guard for public routes
 @Controller('products')
 export class ProductController {
+  productModel: any;
   constructor(private productService: ProductService) { }
 
   // ✅ Public route: no guards
@@ -18,11 +19,24 @@ export class ProductController {
     return this.productService.findAll(query);
   }
 
+  @Get('max-price')
+  async getMaxPrice() {
+    const products = await this.productService.findAll({});
+    if (!products || products.length === 0) {
+      return { max: 1000 }; // fallback default value
+    }
+    const prices = products.map((p) => p.price || 0);
+    const max = Math.max(...prices);
+    return { max };
+  }
+
   // ✅ Public route: no guards
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(id);
   }
+
+
 
   // ✅ Public route: no guards
   @UseGuards(JwtAuthGuard) // Only requires valid login

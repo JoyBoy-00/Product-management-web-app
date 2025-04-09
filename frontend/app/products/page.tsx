@@ -4,13 +4,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import {
-  Card,
-  CardContent,
   Typography,
-  TextField,
-  Button,
   Box,
-  MenuItem,
   Avatar,
   Menu,
   MenuItem as MuiMenuItem,
@@ -20,6 +15,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { jwtDecode } from "jwt-decode";
 import SearchFilters from "./search";
 import ProductForm from "./addProduct";
+import ProductCard from "./productCard";
 
 interface JwtPayload {
   email: string;
@@ -51,11 +47,9 @@ export default function ProductsPage() {
   const [filters, setFilters] = useState({
     search: "",
     category: "",
-    minPrice: "",
-    maxPrice: "",
+    minPrice: 0,
+    maxPrice: 3000,
     minRating: "",
-    description: "",
-    rating: "",
     sort: "",
   });
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -91,6 +85,19 @@ export default function ProductsPage() {
 
   const handleDeleteProduct = async (id: string) => {
     const token = localStorage.getItem("token");
+console.log("📤 Using token:", token);
+
+if (!token) {
+  console.error("❌ No token found in localStorage");
+  return;
+}
+
+try {
+  const decoded = jwtDecode<JwtPayload>(token);
+  console.log("🪪 Decoded token:", decoded);
+} catch (err) {
+  console.error("❌ Could not decode token:", err);
+}
     try {
       await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`, {
         headers: {
@@ -106,9 +113,31 @@ export default function ProductsPage() {
   const handleEditProduct = (product: Product) => {
     setEditingProduct({ ...product });
   };
+  
 
   const handleSaveEdit = async () => {
     const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("❌ No token found in localStorage");
+      return;
+    }
+
+    const decoded = jwtDecode<JwtPayload>(token);
+    console.log("🪪 Decoded token:", decoded);
+    console.log("🕓 Expiry check:", decoded.exp * 1000 < Date.now());
+    console.log("📤 Sending token:", `Bearer ${token}`);
+
+    if (decoded.exp * 1000 < Date.now()) {
+      console.error("❌ Token expired");
+      localStorage.clear();
+      router.push("/login");
+      return;
+    }
+
+    if (decoded.role !== "ADMIN") {
+      console.error("❌ User is not ADMIN", decoded.role);
+      return;
+    }
     if (!editingProduct) return;
     try {
       await axios.put(
@@ -143,6 +172,7 @@ export default function ProductsPage() {
 
   const applyFilters = async () => {
     try {
+      console.log("Applying filter", filters);
       const params = new URLSearchParams(filters as any).toString();
       const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products?${params}`);
       setProducts(res.data);
@@ -217,106 +247,15 @@ export default function ProductsPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((p) => (
-          <Card key={p._id} className="w-full max-w-md backdrop-blur-sm bg-white/90 rounded-xl transition-transform hover:scale-105 shadow-lg">
-            <CardContent>
-              {editingProduct?._id === p._id ? (
-                <>
-                  <div className="mb-3">
-                    <TextField
-                      label="Name"
-                      fullWidth
-                      value={editingProduct.name}
-                      onChange={(e) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          name: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <TextField
-                      label="Description"
-                      fullWidth
-                      className="mb-2"
-                      value={editingProduct.description}
-                      onChange={(e) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          description: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <TextField
-                      label="Price"
-                      fullWidth
-                      type="number"
-                      className="mb-2"
-                      value={editingProduct.price}
-                      onChange={(e) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          price: parseFloat(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={handleSaveEdit}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      onClick={() => setEditingProduct(null)}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex flex-col">
-                    <Typography variant="h5">{p.name}</Typography>
-                    <Typography variant="body2" className="text-gray-600">
-                      {p.category}
-                    </Typography>
-                    <Typography className="font-bold mt-2">
-                    ₹{p.price}
-                    </Typography>
-                    <Typography className="font-bold mt-2">
-                      {p.rating}⭐
-                    </Typography>
-                    <Typography variant="body2" className="text-gray-600">
-                      {p.description}
-                    </Typography>
-                  </div>
-                  {isAdmin && (
-                    <div className="flex gap-2 mt-4">
-                      <Button
-                        variant="outlined"
-                        onClick={() => handleEditProduct(p)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleDeleteProduct(p._id)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  )}
-                </>
-              )}
-            </CardContent>
-          </Card>
+          <ProductCard
+            key={p._id}
+            product={p}
+            editingProduct={editingProduct}
+            isAdmin={isAdmin}
+            setEditingProduct={setEditingProduct}
+            handleSaveEdit={handleSaveEdit}
+            handleDeleteProduct={handleDeleteProduct}
+          />
         ))}
       </div>
     </Box>

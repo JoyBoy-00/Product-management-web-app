@@ -6,13 +6,19 @@ import { UserModule } from '../user/user.module'; // ✅ Import this
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/user/schemas/user.schema';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: process.env.MY_CUSTOM_JWT_KEY || 'fallbackSecret',
-      signOptions: { expiresIn: '1d' },
+    ConfigModule.forRoot({ isGlobal: true }), // <-- Ensure .env is loaded globally
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get('MY_CUSTOM_JWT_KEY'),
+        signOptions: { expiresIn: '1d' },
+      }),
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
