@@ -3,20 +3,29 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import {
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  MenuItem,
+} from "@mui/material";
 
 export default function SignupPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [form, setForm] = useState({ email: "", password: "", role: "USER" });
+  const [error, setError] = useState("");
   const router = useRouter();
+
+  const handleChange = (e: { target: { name: any; value: any; }; }) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/auth/signup', {
-        email,
-        password,
-        role: 'ADMIN', // You can set this to 'USER' or 'ADMIN' based on your requirement
-      });
+      await axios.post('http://localhost:5000/auth/signup', form);
       alert('Signup successful!');
       router.push('/login');
     } catch (error: any) {
@@ -25,29 +34,46 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h2 className="text-2xl mb-4">Signup</h2>
-      <form onSubmit={handleSignup} className="space-y-4">
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2 w-full"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="border p-2 w-full"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button className="bg-green-600 text-white px-4 py-2" type="submit">
-          Signup
-        </button>
-      </form>
-    </div>
+    <Box className="flex justify-center items-center h-screen bg-gray-800">
+      <Card className="w-full max-w-md p-6 bg-gray-800">
+        <CardContent>
+          <div className="mb-6 text-3xl font-bold text-center text-black">
+            Signup
+          </div>
+          <div className="flex flex-col gap-4">
+            <TextField
+              label="Email"
+              name="email"
+              fullWidth
+              value={form.email}
+              onChange={handleChange}
+            />
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              fullWidth
+              value={form.password}
+              onChange={handleChange}
+            />
+            <TextField
+              select
+              label="Role"
+              name="role"
+              fullWidth
+              value={form.role}
+              onChange={handleChange}
+            >
+              <MenuItem value="USER">User</MenuItem>
+              <MenuItem value="ADMIN">Admin</MenuItem>
+            </TextField>
+            {error && <p className="text-red-400 text-sm">{error}</p>}
+            <Button variant="contained" color="primary" onClick={handleSignup}>
+              Signup
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
