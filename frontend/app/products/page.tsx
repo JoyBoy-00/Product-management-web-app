@@ -159,7 +159,6 @@ export default function ProductsPage() {
               <AccountCircleIcon />
             </Avatar>
           </IconButton>
-          <Typography variant="body2">{userInfo.email}</Typography>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
             <MuiMenuItem disabled>Email: {userInfo.email}</MuiMenuItem>
             <MuiMenuItem onClick={handleLogout}>Logout</MuiMenuItem>
@@ -274,7 +273,7 @@ export default function ProductsPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((p) => (
-          <Card key={p._id} className="shadow-lg">
+          <Card key={p._id} className="w-full max-w-md backdrop-blur-sm bg-white/90 rounded-xl transition-transform hover:scale-105 shadow-lg">
             <CardContent>
               {editingProduct?._id === p._id ? (
                 <>

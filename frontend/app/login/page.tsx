@@ -85,18 +85,16 @@ export default function LoginPage() {
               <AccountCircleIcon />
             </Avatar>
           </IconButton>
-          <Typography variant="body2">{userInfo.email}</Typography>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
             <MenuItem disabled>Email: {userInfo.email}</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </Box>
       )}
-      <Card className="w-full max-w-md p-6 bg-gray-800">
-        <CardContent>
-          <Typography variant="h5" className="mb-6 font-bold text-center text-white">
+      <div className="w-full max-w-md p-6 backdrop-blur-sm bg-white/90 rounded-xl transition-transform hover:scale-105">
+          <div className="mb-6 text-3xl font-bold text-center text-black">
             Login
-          </Typography>
+          </div>
           <div className="flex flex-col gap-4">
             <TextField
               label="Email"
@@ -118,8 +116,7 @@ export default function LoginPage() {
               Login
             </Button>
           </div>
-        </CardContent>
-      </Card>
+      </div>
     </Box>
   );
 }

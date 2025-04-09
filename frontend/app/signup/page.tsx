@@ -35,7 +35,7 @@ export default function SignupPage() {
 
   return (
     <Box className="flex justify-center items-center h-screen bg-gradient-to-b from-blue-800 via-black to-black">
-      <Card className="w-full max-w-md p-6 bg-gray-800">
+      <div className="w-full max-w-md p-6 backdrop-blur-md bg-white/90 border border-white/30 rounded-xl shadow-lg">
         <CardContent>
           <div className="mb-6 text-3xl font-bold text-center text-black">
             Signup
@@ -73,7 +73,7 @@ export default function SignupPage() {
             </Button>
           </div>
         </CardContent>
-      </Card>
+      </div>
     </Box>
   );
 }
