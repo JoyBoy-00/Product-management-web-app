@@ -2,13 +2,14 @@
 import { Card, CardContent, Typography, TextField, Button } from "@mui/material";
 // Product type defined locally in this file
 interface Product {
-    _id: string;
-    name: string;
-    price: number;
-    description: string;
-    category: string;
-    rating: number;
-  }
+  createdBy?: string;
+  _id: string;
+  name: string;
+  price: number;
+  description: string;
+  category: string;
+  rating: number;
+}
 
 interface ProductCardProps {
   product: Product;
@@ -96,6 +97,9 @@ const ProductCard = ({
               <Typography className="font-bold mt-2">
                 {product.rating}⭐
               </Typography>
+              <p className="text-sm text-gray-300">
+                Added by: {product.createdBy || 'Unknown'}
+              </p>
               <Typography variant="body2" className="text-gray-600">
                 {product.description}
               </Typography>

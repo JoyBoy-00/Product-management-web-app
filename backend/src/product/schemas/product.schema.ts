@@ -23,6 +23,9 @@ export class Product {
 
   @Prop({ default: 10 })
   rating: number;
+
+  @Prop()
+  createdBy?: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

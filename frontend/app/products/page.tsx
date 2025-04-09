@@ -32,11 +32,16 @@ interface Product {
   description: string;
   category: string;
   rating: number;
+  createdBy?: string;
+}
+
+interface ProductPage extends Product {
+  createdBy?: string;
 }
 
 export default function ProductsPage() {
   const router = useRouter();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductPage[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 6;
@@ -46,6 +51,7 @@ export default function ProductsPage() {
     description: "",
     category: "",
     rating: 10,
+    createdBy: "",
   });
   const [filters, setFilters] = useState({
     search: "",
@@ -55,7 +61,7 @@ export default function ProductsPage() {
     minRating: "",
     sort: "",
   });
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<ProductPage | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [userInfo, setUserInfo] = useState({ email: "" });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -133,7 +139,7 @@ export default function ProductsPage() {
     }
   };
 
-  const handleEditProduct = (product: Product) => {
+  const handleEditProduct = (product: ProductPage) => {
     setEditingProduct({ ...product });
   };
 
@@ -270,7 +276,7 @@ export default function ProductsPage() {
           <ProductCard
             key={p._id}
             product={p}
-            editingProduct={editingProduct}
+            editingProduct={editingProduct as any}
             isAdmin={isAdmin}
             setEditingProduct={setEditingProduct}
             handleSaveEdit={handleSaveEdit}

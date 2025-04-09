@@ -1,4 +1,4 @@
-import { Query, UseGuards } from '@nestjs/common';
+import { Query, Req, UseGuards } from '@nestjs/common';
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -41,8 +41,9 @@ export class ProductController {
   // ✅ Public route: no guards
   @UseGuards(JwtAuthGuard) // Only requires valid login
   @Post()
-  create(@Body() body: any) {
-    return this.productService.create(body);
+  create(@Body() body: any, @Req() req: any) {
+    const email = req.user?.email;
+    return this.productService.create({ ...body, createdBy: email });
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
