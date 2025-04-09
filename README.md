@@ -96,6 +96,16 @@ Admins can add/edit/delete products, regular users can only view
 |------|-------|----------|
 |![Home](./screenshot/Home.png)| ![Login](./screenshot/login.png) | ![Products](./screenshot/Signup.png) |
 
+| Product | Page | Admin Page |
+|------|-------|----------|
+|![Home](./screenshot/product.png)| ![Login](./screenshot/page.png) | ![Products](./screenshot/admin_page.png) |
+
+| Admin CRUD | Logout |
+|------|-------|
+|![Home](./screenshot/admin_crud.png)| ![Login](./screenshot/token.png) |
+
+---
+---
 ---
 
 ## 🙌 Made By
