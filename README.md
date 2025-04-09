@@ -94,7 +94,7 @@ Admins can add/edit/delete products, regular users can only view
 
 | Home | Login | Products |
 |------|-------|----------|
-|![Home](./screenshot/Home.png)| ![Login](./screenshot/Login.png) | ![Products](./screenshot/Signup.png) |
+|![Home](./screenshot/Home.png)| ![Login](./screenshot/login.png) | ![Products](./screenshot/Signup.png) |
 
 ---
 
