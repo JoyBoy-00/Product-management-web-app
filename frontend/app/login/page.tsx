@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import { useState, useEffect, SetStateAction } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -10,37 +11,92 @@ import {
   TextField,
   Button,
   Box,
+  Avatar,
+  Menu,
+  MenuItem,
+  IconButton,
 } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
+interface JwtPayload {
+  email: string;
+  role: string;
+  iat: number;
+  exp: number;
+}
 
 export default function LoginPage() {
+  const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [userInfo, setUserInfo] = useState({ email: ""});
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    if (storedEmail) {
+      setUserInfo({ email: storedEmail });
+    }
+  }, []);
 
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/auth/login', form);
+      const res = await axios.post("http://localhost:5000/auth/login", form);
+      const token = res.data.token;
+      const decoded = jwtDecode<JwtPayload>(token);
 
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('role', response.data.role); // You need to return role from backend
-      router.push('/products');
-    } catch (error: any) {
-      alert(error?.response?.data?.message || 'Login failed');
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", res.data.role);
+      localStorage.setItem("email", decoded.email);
+
+      setUserInfo({ email: decoded.email });
+      router.push("/products");
+    } catch (err) {
+      setError("Invalid email or password");
     }
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove token from local storage
+    localStorage.removeItem("role");  // Remove role from local storage
+    localStorage.removeItem("email"); // Remove email from local storage
+    localStorage.removeItem("userId"); // Remove userId from local storage
+    router.push("/");         // Navigate to login page
   };
 
   return (
     <Box className="flex justify-center items-center h-screen bg-gradient-to-b from-blue-800 via-black to-black">
+      {userInfo.email && (
+        <Box className="absolute top-4 right-4 text-white flex items-center gap-2">
+          <IconButton onClick={handleMenuOpen} className="text-white">
+            <Avatar>
+              <AccountCircleIcon />
+            </Avatar>
+          </IconButton>
+          <Typography variant="body2">{userInfo.email}</Typography>
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+            <MenuItem disabled>Email: {userInfo.email}</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </Menu>
+        </Box>
+      )}
       <Card className="w-full max-w-md p-6 bg-gray-800">
         <CardContent>
-          <div className="mb-6 font-bold text-3xl text-center text-black">
+          <Typography variant="h5" className="mb-6 font-bold text-center text-white">
             Login
-          </div>
+          </Typography>
           <div className="flex flex-col gap-4">
             <TextField
               label="Email"
@@ -48,8 +104,6 @@ export default function LoginPage() {
               fullWidth
               value={form.email}
               onChange={handleChange}
-              InputLabelProps={{ className: "text-white" }}
-              InputProps={{ style: { color: "white" } }}
             />
             <TextField
               label="Password"
@@ -58,8 +112,6 @@ export default function LoginPage() {
               fullWidth
               value={form.password}
               onChange={handleChange}
-              InputLabelProps={{ className: "text-white" }}
-              InputProps={{ style: { color: "white" } }}
             />
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <Button variant="contained" color="primary" onClick={handleLogin}>
