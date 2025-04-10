@@ -57,6 +57,7 @@ cd backend
 npm install
 cp .env.example .env
 # Fill in MONGODB_URI, MY_CUSTOM_JWT_KEY and FRONTEND_URL in the .env file
+# FRONTEND_URL=http://localhost:3000
 npm run start
 ```
 
@@ -66,7 +67,7 @@ npm run start
 cd frontend
 npm install
 cp .env.example .env
-# Fill in NEXT_PUBLIC_BACKEND_URL in the .env file
+# Fill in NEXT_PUBLIC_BACKEND_URL=http://localhost:5000 in the .env file
 npm run dev
 ```
 
