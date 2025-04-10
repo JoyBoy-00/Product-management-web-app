@@ -47,7 +47,7 @@ A full-stack web application by [JoyBoy-00](https://github.com/JoyBoy-00) for ma
 
 ```bash
 git clone https://github.com/JoyBoy-00/Product-management-web-app.git
-cd Product-Management
+cd Project\ Management/
 ```
 
 ### 🔧 Backend Setup
