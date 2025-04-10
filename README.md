@@ -90,7 +90,7 @@ Admins can add/edit/delete products, regular users can only view
 
 ---
 
-## 🧪 Screenshots (Add yours)
+## 🧪 Screenshots
 
 | Home | Login | Products |
 |------|-------|----------|
