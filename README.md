@@ -96,11 +96,11 @@ Admins can add/edit/delete products, regular users can only view
 |------|-------|----------|
 |![Home](./screenshot/Home.png)| ![Login](./screenshot/login.png) | ![Products](./screenshot/Signup.png) |
 
-| Product | Page | Admin Page |
+| Product | Pagination | Admin Page |
 |------|-------|----------|
 |![Home](./screenshot/product.png)| ![Login](./screenshot/page.png) | ![Products](./screenshot/admin_page.png) |
 
-| Admin CRUD | Logout |
+| Admin CRUD | Profile |
 |------|-------|
 |![Home](./screenshot/admin_post.png)| ![Login](./screenshot/token.png) |
 
@@ -117,7 +117,7 @@ Feel free to fork, contribute, or give a ⭐ on GitHub!
 
 - Product images  
 - Registration system  
-- Admin dashboard  
+- Personalised dashboard  
 - Theme toggle (light/dark)  
 - Full test coverage
 
