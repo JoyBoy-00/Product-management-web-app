@@ -1,6 +1,5 @@
-// ProductCard.tsx
 import { Card, CardContent, Typography, TextField, Button } from "@mui/material";
-// Product type defined locally in this file
+
 interface Product {
   createdBy?: string;
   _id: string;

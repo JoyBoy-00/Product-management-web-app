@@ -15,7 +15,7 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
   private configService: ConfigService,
-  ) {console.log("🚀 JWT Secret in AuthService:", this.configService.get('MY_CUSTOM_JWT_KEY'));
+  ) {console.log("JWT Secret in AuthService:", this.configService.get('MY_CUSTOM_JWT_KEY'));
     
   }
 

@@ -13,7 +13,7 @@ interface SearchFiltersProps {
 
 export default function SearchFilters({ filters, setFilters, applyFilters }: SearchFiltersProps) {
     const [showForm, setShowForm] = useState(false);
-    const [maxPriceRange, setMaxPriceRange] = useState(1000); // default fallback
+    const [maxPriceRange, setMaxPriceRange] = useState(1000);
 
     const handleChange = (field: string, value: any) => {
         setFilters((prev: any) => ({ ...prev, [field]: value }));
@@ -23,7 +23,7 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
         const fetchMaxPrice = async () => {
             try {
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/max-price`);
-                setMaxPriceRange(res.data.max || 1000); // default if nothing
+                setMaxPriceRange(res.data.max || 1000);
             } catch (err) {
                 console.error("Failed to fetch max price", err);
             }
@@ -64,7 +64,7 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                 <Card className="mb-8 p-4">
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                            {/* Search */}
+
                             <TextField
                                 label="Search"
                                 className="bg-white rounded-lg"
@@ -75,7 +75,6 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                                 size="small"
                             />
 
-                            {/* Category dropdown */}
                             <TextField
                                 select
                                 label="Category"
@@ -95,7 +94,6 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                                 <MenuItem value="Other">Other</MenuItem>
                             </TextField>
 
-                            {/* Min Rating */}
                             <TextField
                                 label="Min Rating"
                                 type="number"
@@ -108,11 +106,10 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                                 inputProps={{
                                     min: 0,
                                     max: 10,
-                                    step: 0.1  // Allows decimal ratings if needed
+                                    step: 0.1
                                 }}
                             />
 
-                            {/* Sort */}
                             <TextField
                                 select
                                 label="Sort By"
@@ -130,7 +127,6 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                                 <MenuItem value="rating">Rating (Low to High)</MenuItem>
                             </TextField>
 
-                            {/* Price Range */}
                             <div>
                                 <div>Price Range</div>
                                 <Slider
@@ -151,7 +147,6 @@ export default function SearchFilters({ filters, setFilters, applyFilters }: Sea
                             <div></div>
                             <div></div>
 
-                            {/* Action Buttons */}
                             <div className="flex items-end gap-2">
                                 <Button
                                     variant="outlined"

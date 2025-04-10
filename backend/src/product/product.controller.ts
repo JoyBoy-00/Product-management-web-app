@@ -6,14 +6,11 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
 import { ProductService } from './product.service';
 
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// no guard for public routes
 @Controller('products')
 export class ProductController {
   productModel: any;
   constructor(private productService: ProductService) { }
 
-  // ✅ Public route: no guards
   @Get()
   findAll(@Query('page') page = 1, @Query('limit') limit = 10, @Query() query: any) {
     return this.productService.findAllPaginated(+page, +limit, query);
@@ -23,23 +20,19 @@ export class ProductController {
   async getMaxPrice() {
     const products = await this.productService.findAll({});
     if (!products || products.length === 0) {
-      return { max: 1000 }; // fallback default value
+      return { max: 1000 };
     }
     const prices = products.map((p) => p.price || 0);
     const max = Math.max(...prices);
     return { max };
   }
 
-  // ✅ Public route: no guards
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(id);
   }
 
-
-
-  // ✅ Public route: no guards
-  @UseGuards(JwtAuthGuard) // Only requires valid login
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() body: any, @Req() req: any) {
     const email = req.user?.email;

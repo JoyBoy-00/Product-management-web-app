@@ -17,17 +17,14 @@ export class ProductService {
   
     const mongoQuery: any = {};
   
-    // ✅ Search
     if (query.search && query.search.trim() !== "") {
       mongoQuery.name = { $regex: query.search.trim(), $options: "i" };
     }
   
-    // ✅ Category
     if (query.category && query.category.trim() !== "") {
       mongoQuery.category = query.category.trim();
     }
   
-    // ✅ Parse price filters
     const minPrice = parseFloat(query.minPrice);
     const maxPrice = parseFloat(query.maxPrice);
   
@@ -37,13 +34,11 @@ export class ProductService {
       if (!isNaN(maxPrice)) mongoQuery.price.$lte = maxPrice;
     }
   
-    // ✅ Rating
     const minRating = parseFloat(query.minRating);
     if (!isNaN(minRating)) {
       mongoQuery.rating = { $gte: minRating };
     }
   
-    // ✅ Sort
     let sortOption = {};
     if (query.sort && typeof query.sort === "string") {
       const field = query.sort.replace("-", "");
@@ -51,8 +46,8 @@ export class ProductService {
       sortOption[field] = order;
     }
   
-    console.log("📦 MongoQuery:", mongoQuery);
-    console.log("📊 Sort Option:", sortOption);
+    console.log("MongoQuery:", mongoQuery);
+    console.log("Sort Option:", sortOption);
   
     const products = await this.productModel
       .find(mongoQuery)

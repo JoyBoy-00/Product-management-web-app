@@ -53,8 +53,8 @@ export default function HomePage() {
     localStorage.clear();
     router.push('/');
     setTimeout(() => {
-      window.location.reload(); // 🔄 force full page reload
-    }, 100); // small delay to let push happen
+      window.location.reload();
+    }, 100);
   };
 
   return (
@@ -66,7 +66,7 @@ export default function HomePage() {
               sx={{
                 width: 48,
                 height: 48,
-                bgcolor: '#B5A8D5', // Tailwind's indigo-600
+                bgcolor: '#B5A8D5',
                 color: 'white',
                 fontSize: 24,
               }}
@@ -85,7 +85,7 @@ export default function HomePage() {
         Welcome to Product Manager 🚀
       </h1>
       <p className="text-lg text-gray-300 mb-10 max-w-xl">
-        A Minimalistic and Powerful Product Management Web Application built to simplify your workflow.
+        A Minimalistic and Powerful Product Management Web Application.
       </p>
 
       <div className="flex flex-col sm:flex-row gap-4">

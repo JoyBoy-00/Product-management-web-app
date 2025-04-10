@@ -82,16 +82,16 @@ export default function ProductsPage() {
       if (decoded.role === "ADMIN") setIsAdmin(true);
       setIsAuthenticated(true);
     } catch (err) {
-      console.error("❌ Invalid token");
+      console.error("Invalid token");
       router.push("/login");
     } finally {
-      setIsLoading(false); // done loading regardless
+      setIsLoading(false);
     }
   }, []);
 
   const fetchProducts = async () => {
     try {
-      console.log("📦 Fetching page:", page, "with filters:", filters);
+      console.log("Fetching page:", page, "with filters:", filters);
       const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`, {
         params: {
           ...filters,
@@ -104,7 +104,7 @@ export default function ProductsPage() {
       setProducts(productList);
       setTotalPages(res.data.totalPages || 1);
     } catch (err) {
-      console.error("❌ Error fetching products", err);
+      console.error("Error fetching products", err);
       setProducts([]);
     }
   };
@@ -224,7 +224,7 @@ export default function ProductsPage() {
   }
 
   if (!isAuthenticated) {
-    return null; // Don't render anything while redirecting
+    return null;
   }
 
   return (
@@ -236,7 +236,7 @@ export default function ProductsPage() {
               sx={{
                 width: 48,
                 height: 48,
-                bgcolor: '#B5A8D5', // Tailwind's indigo-600
+                bgcolor: '#B5A8D5', 
                 color: 'white',
                 fontSize: 24,
               }}
@@ -271,6 +271,7 @@ export default function ProductsPage() {
       />
 
 
+      {/* Product Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {Array.isArray(products) && products.map((p) => (
           <ProductCard
@@ -284,11 +285,12 @@ export default function ProductsPage() {
           />
         ))}
 
-        {/* Optional: show message if empty */}
+        {/*if empty */}
         {Array.isArray(products) && products.length === 0 && (
           <div className="text-white col-span-full text-center text-lg">No products found.</div>
         )}
       </div>
+
 
       {/* Pagination Controls */}
       <div className="flex justify-center mt-6 gap-4">

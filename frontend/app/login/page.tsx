@@ -5,9 +5,6 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import {
-  Card,
-  CardContent,
-  Typography,
   TextField,
   Button,
   Box,
@@ -69,11 +66,11 @@ export default function LoginPage() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove token from local storage
-    localStorage.removeItem("role");  // Remove role from local storage
-    localStorage.removeItem("email"); // Remove email from local storage
-    localStorage.removeItem("userId"); // Remove userId from local storage
-    router.push("/");         // Navigate to login page
+    localStorage.removeItem("token"); 
+    localStorage.removeItem("role"); 
+    localStorage.removeItem("email"); 
+    localStorage.removeItem("userId");
+    router.push("/");
   };
 
   return (
@@ -85,7 +82,7 @@ export default function LoginPage() {
               sx={{
                 width: 48,
                 height: 48,
-                bgcolor: '#B5A8D5', // Tailwind's indigo-600
+                bgcolor: '#B5A8D5',
                 color: 'white',
                 fontSize: 24,
               }}

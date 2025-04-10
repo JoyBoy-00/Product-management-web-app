@@ -61,7 +61,8 @@ export default function ProductForm({ newProduct, setNewProduct, handleAddProduc
                             Add New Product
                         </Typography>
                         <div className="flex flex-col gap-4">
-                            {/* 1st row: name, price, category, rating */}
+
+                            {/*name, price, category, rating */}
                             <div className="flex flex-col md:flex-row gap-4">
                                 <div className="flex-2">
                                     <TextField
