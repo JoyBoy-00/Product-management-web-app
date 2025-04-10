@@ -56,9 +56,8 @@ cd Product-Management
 cd backend
 npm install
 cp .env.example .env
-# Fill in MONGODB_URI
- and MY_CUSTOM_JWT_KEY in the .env file
-npm run start:dev
+# Fill in MONGODB_URI, MY_CUSTOM_JWT_KEY and FRONTEND_URL in the .env file
+npm run start
 ```
 
 ### 🎨 Frontend Setup
@@ -67,7 +66,7 @@ npm run start:dev
 cd frontend
 npm install
 cp .env.example .env
-# Fill in NEXT_PUBLIC_BACKEND_URL
+# Fill in NEXT_PUBLIC_BACKEND_URL in the .env file
 npm run dev
 ```
 
